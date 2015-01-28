@@ -3,6 +3,7 @@
 #define SDLWRAPPER_SDLEXCEPTION_HPP
 
 #include <stdexcept>
+#include <string>
 
 namespace sdl {
     class SDLException : public std::runtime_error {

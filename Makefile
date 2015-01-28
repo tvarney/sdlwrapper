@@ -17,7 +17,7 @@ USER_INSTALL := no
 
 # Subdirectories of $PREFIX used by install and user-install
 BINDIR := bin
-LIBDIR := library/x86_64
+LIBDIR := lib
 INCDIR := include
 ROOT_PREFIX := /usr/local
 USER_PREFIX := ${HOME}

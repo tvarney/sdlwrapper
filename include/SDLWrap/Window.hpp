@@ -2,38 +2,44 @@
 #ifndef SDLWRAPPER_WINDOW_HPP
 #define SDLWRAPPER_WINDOW_HPP
 
-#include <SDL_video.h>
+//#include <SDL_video.h>
 #include <stdint.h>
 #include <cstddef>
+#include <map>
 #include <string>
 
+extern "C" struct SDL_Window;
+extern "C" struct SDL_Renderer;
+
 namespace sdl {
-    class Application;
-    
     class Window {
+    private:
+        static std::map<uint32_t, Window *> WindowMap;
+        
     public:
         static const int Anywhere;
         static const int Centered;
         
+        static Window & CreateWindow(const std::string &title, int width,
+                                     int height, int x, int y);
+        static Window * ById(uint32_t id);
+        static void KillAll();
+        
     public:
-        Window(Application &app);
-        Window(Application &app, const std::string &title);
-        Window(Application &app, const std::string &title, int width,
-               int height);
-        Window(Application &app, const std::string &title, int width,
-               int height, int x, int y);
-        ~Window();
+        virtual ~Window();
         
-        void hide();
-        void show();
-        void swap();
+        virtual void hide();
+        virtual void show();
         
-        void makeCurrent();
+        virtual uint32_t getId() const;
+    protected:
+        Window(const std::string &title, int width, int height, int x, int y);
         
-        uint32_t getId();
-    private:
         SDL_Window *mWinHandle;
-        SDL_GLContext mGLContext;
+        SDL_Renderer *mRenderer;
+        
+        // Cached so we don't call a method each time we want the id
+        uint32_t mWinId;
     };
 }
 
