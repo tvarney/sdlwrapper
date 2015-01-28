@@ -3,10 +3,40 @@
 
 using namespace sdl;
 
-#define CAST_TO_EVENT(u32) \
-    (*((Event::Type *)((void*)(&(u32)))))
+void Event::Flush(Event::Type type) {
+    SDL_FlushEvent((SDL_EventType)type);
+}
+void Event::Flush(Event::Type minType, Event::Type maxType) {
+    SDL_FlushEvents((SDL_EventType)minType, (SDL_EventType)maxType);
+}
+
+bool Event::Has(Event::Type type) {
+    return (SDL_TRUE == SDL_HasEvent((SDL_EventType)type));
+}
+bool Event::Has(Event::Type min, Event::Type max) {
+    return (SDL_TRUE == SDL_HasEvents((SDL_EventType)min, (SDL_EventType)max));
+}
+
+bool Event::Poll(Event &event) {
+    return (SDL_TRUE == SDL_PollEvent(&(event.mEvent)));
+}
+
+bool Event::Wait(Event &event) {
+    return (SDL_TRUE == SDL_WaitEvent(&(event.mEvent)));
+}
+
+bool Event::Wait(Event &event, int milliseconds) {
+    return (SDL_TRUE == SDL_WaitEventTimeout(&(event.mEvent), milliseconds));
+}
+
+void Event::Push(Event &event) {
+    SDL_PushEvent(&(event.mEvent));
+}
 
 Event::Event() { }
+Event::Event(Event::Type type) {
+    mEvent.type = type;
+}
 Event::Event(const Event &source) {
     mEvent = source.mEvent;
 }

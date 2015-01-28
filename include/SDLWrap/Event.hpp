@@ -184,6 +184,7 @@ namespace sdl {
     
     public:
         Event();
+        Event(Event::Type type);
         Event(const Event &source);
         ~Event();
         
