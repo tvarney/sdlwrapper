@@ -36,7 +36,7 @@ LIBS := -lGLU -lGL -lpthread -lm -lpng
 endif
 
 # Compilation and packing flags
-CPPFLAGS := -Wall -Werror ${STD} -I${INC} $(shell sdl2-config --cflags) ${PLATFORM}
+CPPFLAGS := -Wall -Werror ${STD} -I${INC} $(shell sdl2-config --cflags) ${PLATFORM} -ggdb
 ARFLAGS := rcs
 
 # Auto creation of 

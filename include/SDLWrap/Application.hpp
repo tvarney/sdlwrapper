@@ -8,6 +8,9 @@
 
 #include "Resources.hpp"
 
+#define Define_MainApp(appref) \
+    sdl::Application * AppHandle = &(appref);
+
 namespace sdl {
     class Event;
     

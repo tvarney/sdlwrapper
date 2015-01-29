@@ -6,6 +6,8 @@
 
 using namespace sdl;
 
+std::vector<std::string> Application::Args;
+
 Application::Application(const std::string &name) :
     mName(name)
 { }
@@ -21,7 +23,8 @@ void Application::stop() { }
 void Application::mainloop() {
     Event e;
     
-    while(Application::mRunning) {
+    mRunning = true;
+    while(mRunning) {
         while(Event::Poll(e)) {
             processEvent(e);
         }
@@ -41,7 +44,6 @@ void Application::processEvent(Event &e) {
     switch(e.type()) {
     case Event::Quit:
         mRunning = false;
-        
         break;
     default:
         break;

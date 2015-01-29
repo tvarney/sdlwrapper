@@ -9,7 +9,16 @@
 
 using namespace sdl;
 
-Window & Window::CreateWindow(const std::string &title, int width, int height,
+int const Window::Anywhere = SDL_WINDOWPOS_UNDEFINED;
+int const Window::Centered = SDL_WINDOWPOS_CENTERED;
+
+std::map<uint32_t, Window *> Window::WindowMap;
+
+Window & Window::Create(const std::string &title, int width, int height) {
+    return *(new Window(title, width, height, Window::Anywhere,
+                        Window::Anywhere));
+}
+Window & Window::Create(const std::string &title, int width, int height,
                               int x, int y)
 {
     return *(new Window(title, width, height, x, y));
@@ -32,7 +41,7 @@ void Window::KillAll() {
 Window::Window(const std::string &title, int width, int height, int x, int y) :
     mWinHandle(nullptr), mRenderer(nullptr)
 {
-    mWinHandle = SDL_CreateWindow(title.data(), width, height, x, y, 0);
+    mWinHandle = SDL_CreateWindow(title.data(), x, y, width, height, 0);
     if(mWinHandle == nullptr) {
         throw SDLException("Failed to create window: ");
     }

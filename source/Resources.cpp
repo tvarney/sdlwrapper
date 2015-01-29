@@ -25,7 +25,7 @@ filesystem::path operator+(const filesystem::path &p1,
 }
 
 Resources::Resources() {
-    addPath(sDefaultPath);
+    addPath(std::string(DEFAULT_LOCATION));
 }
 Resources::~Resources() { }
 

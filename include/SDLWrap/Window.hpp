@@ -20,8 +20,10 @@ namespace sdl {
         static const int Anywhere;
         static const int Centered;
         
-        static Window & CreateWindow(const std::string &title, int width,
-                                     int height, int x, int y);
+        static Window & Create(const std::string &title, int width,
+                               int height);
+        static Window & Create(const std::string &title, int width, int height,
+                               int x, int y);
         static Window * ById(uint32_t id);
         static void KillAll();
         

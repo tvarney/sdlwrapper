@@ -43,12 +43,12 @@ while test $# -gt 0; do
       ;;
     --libs)
       #echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDL2  -lpthread
-      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDLWrap `sdl2-config --libs`
+      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} ${libdir}/libSDLWrapper.a `sdl2-config --libs` -lboost_system -lboost_filesystem
       ;;
     --static-libs)
 #    --libs|--static-libs)
       #echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDL2  -lpthread  -Wl,--no-undefined -lm -ldl -lpthread -lrt
-      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDLWrap `sdl2-config --static-libs`
+      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} ${libdir}/libSDLWrapper.a `sdl2-config --static-libs` -lboost_system -lboost_filesystem
       ;;
     *)
       echo "${usage}" 1>&2
