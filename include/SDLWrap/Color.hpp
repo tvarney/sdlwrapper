@@ -39,7 +39,7 @@ namespace sdl {
                      /* Both are floating point, just let hardware cast it */
                      scalar(v)));
         }
-        static constexpr truncate(const scalar &v) {
+        static constexpr scalar truncate(const scalar &v) {
             return (v > max() ? max() : v);
         }
     };
