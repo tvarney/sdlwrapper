@@ -15,6 +15,7 @@ namespace sdl {
     class Window {
     private:
         static std::map<uint32_t, Window *> WindowMap;
+        static Window * sActiveHandle;
         
     public:
         static const int Anywhere;
@@ -27,6 +28,9 @@ namespace sdl {
         static Window * ById(uint32_t id);
         static void KillAll();
         
+        static Window * Active();
+        
+        static void UpdateAll();
     public:
         virtual ~Window();
         
@@ -34,6 +38,8 @@ namespace sdl {
         virtual void show();
         
         virtual uint32_t getId() const;
+        
+        virtual void update();
     protected:
         Window(const std::string &title, int width, int height, int x, int y);
         

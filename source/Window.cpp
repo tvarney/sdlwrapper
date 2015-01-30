@@ -13,6 +13,7 @@ int const Window::Anywhere = SDL_WINDOWPOS_UNDEFINED;
 int const Window::Centered = SDL_WINDOWPOS_CENTERED;
 
 std::map<uint32_t, Window *> Window::WindowMap;
+Window * Window::sActiveHandle;
 
 Window & Window::Create(const std::string &title, int width, int height) {
     return *(new Window(title, width, height, Window::Anywhere,
@@ -35,6 +36,16 @@ Window * Window::ById(uint32_t id) {
 void Window::KillAll() {
     while(WindowMap.size() > 0) {
         delete (WindowMap.begin()->second);
+    }
+}
+
+Window * Window::Active() {
+    return sActiveHandle;
+}
+
+void Window::UpdateAll() {
+    for(auto wptr : WindowMap) {
+        wptr.second->update();
     }
 }
 
@@ -85,4 +96,9 @@ void Window::show() {
 
 uint32_t Window::getId() const {
     return mWinId;
+}
+
+void Window::update() {
+    SDL_RenderClear(mRenderer);
+    SDL_RenderPresent(mRenderer);
 }
