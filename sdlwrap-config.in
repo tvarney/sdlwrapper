@@ -39,7 +39,7 @@ while test $# -gt 0; do
       echo 2.0.3
       ;;
     --cflags)
-      echo -I${prefix}/${incdir}/SDL2 `sdl2-config --cflags`
+      echo -std=c++11 -I${prefix}/${incdir}/SDL2 `sdl2-config --cflags`
       ;;
     --libs)
       #echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDL2  -lpthread

@@ -8,11 +8,12 @@
 #include <map>
 #include <string>
 
+#include "SDLWrap/Renderable.hpp"
+
 extern "C" struct SDL_Window;
-extern "C" struct SDL_Renderer;
 
 namespace sdl {
-    class Window {
+    class Window : public Renderable {
     private:
         static std::map<uint32_t, Window *> WindowMap;
         static Window * sActiveHandle;
@@ -42,9 +43,9 @@ namespace sdl {
         virtual void update();
     protected:
         Window(const std::string &title, int width, int height, int x, int y);
+        virtual RenderContext * getContext();
         
         SDL_Window *mWinHandle;
-        SDL_Renderer *mRenderer;
         
         // Cached so we don't call a method each time we want the id
         uint32_t mWinId;

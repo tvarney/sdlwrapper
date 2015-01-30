@@ -50,7 +50,7 @@ all: ${TARGET}
 fresh: clean all
 
 clean:
-	rm ${BIN}/*.o ${TARGET}
+	rm -rf ${BIN}/*.o ${TARGET}
 
 builddir: ${BIN}/.flag
 

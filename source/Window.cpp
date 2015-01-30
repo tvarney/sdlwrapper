@@ -50,18 +50,11 @@ void Window::UpdateAll() {
 }
 
 Window::Window(const std::string &title, int width, int height, int x, int y) :
-    mWinHandle(nullptr), mRenderer(nullptr)
+    mWinHandle(nullptr)
 {
     mWinHandle = SDL_CreateWindow(title.data(), x, y, width, height, 0);
     if(mWinHandle == nullptr) {
         throw SDLException("Failed to create window: ");
-    }
-    
-    mRenderer = SDL_CreateRenderer(mWinHandle, -1, SDL_RENDERER_ACCELERATED);
-    if(mRenderer == nullptr) {
-        SDL_DestroyWindow(mWinHandle);
-        mWinHandle = nullptr;
-        throw SDLException("Failed to create renderer: ");
     }
     
     mWinId = SDL_GetWindowID(mWinHandle);
@@ -79,10 +72,7 @@ Window::~Window() {
     
     hide();
     
-    SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWinHandle);
-    
-    mRenderer = nullptr;
     mWinHandle = nullptr;
 }
 
@@ -99,6 +89,14 @@ uint32_t Window::getId() const {
 }
 
 void Window::update() {
-    SDL_RenderClear(mRenderer);
-    SDL_RenderPresent(mRenderer);
+    Graphics &g = this->getGraphics();
+    g.clear();
+    // root->update(g);
+    g.present();
+}
+
+RenderContext * Window::getContext() {
+    mContext = SDL_CreateRenderer(mWinHandle, -1,
+                                  SDL_RENDERER_ACCELERATED);
+    return mContext;
 }
