@@ -18,6 +18,12 @@
 namespace sdl {
     class Event;
     
+    struct OpenGLVersion {
+        OpenGLVersion(int major_v, int minor_v);
+        
+        int major_version, minor_version;
+    };
+    
     class Application {
     private:
         /**
@@ -68,7 +74,19 @@ namespace sdl {
          * \return The application's current status.
          */
         virtual Application::Status getStatus() const;
+        
+        virtual OpenGLVersion getGLVersion() const;
     protected:
+        /**
+         * \brief Set the required OpenGL version.
+         * 
+         * The default OpenGL version to require is 2.1.
+         * 
+         * \arg \c major The major opengl version to require
+         * \arg \c minor The minor opengl version to require
+         */
+        virtual void requireGLVersion(int major, int minor);
+        
         /**
          * \brief Parse command line arguments.
          * 

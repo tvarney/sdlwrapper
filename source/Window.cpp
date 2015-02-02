@@ -9,12 +9,20 @@
 
 using namespace sdl;
 
+static SDL_GLContext gOpenGLContext = nullptr;
+
+//------------------//
+// Static Variables //
+//------------------//
 int const Window::Anywhere = SDL_WINDOWPOS_UNDEFINED;
 int const Window::Centered = SDL_WINDOWPOS_CENTERED;
 
 std::map<uint32_t, Window *> Window::WindowMap;
 Window * Window::sActiveHandle;
 
+//------------//
+// Static API //
+//------------//
 Window & Window::Create(const std::string &title, int width, int height) {
     return *(new Window(title, width, height, Window::Anywhere,
                         Window::Anywhere));
@@ -49,10 +57,38 @@ void Window::UpdateAll() {
     }
 }
 
+std::size_t Window::NumWindows() {
+    return WindowMap.size();
+}
+
+//---------------------//
+// Window Graphics API //
+//---------------------//
+Window::WindowGraphics::WindowGraphics(Window &window) :
+    mWindow(window)
+{
+    // Make sure we have a context.
+    if(gOpenGLContext == nullptr) {
+        gOpenGLContext = SDL_GL_CreateContext(window.mWinHandle);
+    }
+}
+Window::WindowGraphics::~WindowGraphics() { }
+
+void Window::WindowGraphics::present() {
+    SDL_GL_SwapWindow(mWindow.mWinHandle);
+}
+void Window::WindowGraphics::makeCurrent() {
+    SDL_GL_MakeCurrent(mWindow.mWinHandle, gOpenGLContext);
+}
+
+//------------//
+// Window API //
+//------------//
 Window::Window(const std::string &title, int width, int height, int x, int y) :
     mWinHandle(nullptr)
 {
-    mWinHandle = SDL_CreateWindow(title.data(), x, y, width, height, 0);
+    mWinHandle = SDL_CreateWindow(title.data(), x, y, width, height,
+                                  SDL_WINDOW_OPENGL);
     if(mWinHandle == nullptr) {
         throw SDLException("Failed to create window: ");
     }
@@ -88,15 +124,18 @@ uint32_t Window::getId() const {
     return mWinId;
 }
 
+Graphics & Window::getGraphics() {
+    
+    if(mGraphics == nullptr) {
+        mGraphics = new WindowGraphics(*this);
+    }
+    
+    return *mGraphics;
+}
+
 void Window::update() {
     Graphics &g = this->getGraphics();
     g.clear();
     // root->update(g);
     g.present();
-}
-
-RenderContext * Window::getContext() {
-    mContext = SDL_CreateRenderer(mWinHandle, -1,
-                                  SDL_RENDERER_ACCELERATED);
-    return mContext;
 }

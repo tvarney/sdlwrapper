@@ -2,14 +2,23 @@ exec_prefix=${prefix}
 exec_prefix_set=no
 libdir=${exec_prefix}/${libext}
 
+execname=`basename "$0"`
+
 #usage="\
 #Usage: $0 [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--libs]"
 usage="\
-Usage: $0 [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--libs] [--static-libs]"
+Usage: ${execname} [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--libs] [--static-libs]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
       exit 1
+fi
+
+uname=`uname -s`
+if `test ${uname} = "Darwin"`; then
+   opengl="--framework OpenGL"
+else
+    opengl="-lGL"
 fi
 
 while test $# -gt 0; do
@@ -43,12 +52,12 @@ while test $# -gt 0; do
       ;;
     --libs)
       #echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDL2  -lpthread
-      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} ${libdir}/libSDLWrapper.a `sdl2-config --libs` -lboost_system -lboost_filesystem
+      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} ${libdir}/libSDLWrapper.a `sdl2-config --libs` -lboost_system -lboost_filesystem ${opengl}
       ;;
     --static-libs)
 #    --libs|--static-libs)
       #echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} -lSDL2  -lpthread  -Wl,--no-undefined -lm -ldl -lpthread -lrt
-      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} ${libdir}/libSDLWrapper.a `sdl2-config --static-libs` -lboost_system -lboost_filesystem
+      echo -L${exec_prefix}/${libext} -Wl,-rpath,${libdir} ${libdir}/libSDLWrapper.a `sdl2-config --static-libs` -lboost_system -lboost_filesystem ${opengl}
       ;;
     *)
       echo "${usage}" 1>&2
