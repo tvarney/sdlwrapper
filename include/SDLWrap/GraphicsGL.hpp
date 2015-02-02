@@ -14,6 +14,8 @@ namespace sdl {
         
         virtual void setColor(const Color<uint8_t> &color);
         virtual void setClearColor(const Color<uint8_t> &color);
+        
+        virtual bool supportsOpenGL() const;
     protected:
         Color<uint8_t> mFgColor, mClearColor;
     };

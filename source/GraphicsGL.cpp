@@ -20,3 +20,7 @@ void GraphicsGL::setClearColor(const Color<uint8_t> &color) {
     mClearColor.a = 255; //< Lock clear color to full alpha
     glClearColor(color.r, color.g, color.b, color.a);
 }
+
+bool GraphicsGL::supportsOpenGL() const {
+    return true;
+}

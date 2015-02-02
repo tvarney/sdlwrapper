@@ -32,10 +32,13 @@ namespace sdl {
             
             void setColor(const Color<uint8_t> &color);
             void setClearColor(const Color<uint8_t> &color);
-            
         protected:
+            Image & mParent;
             Color<uint8_t> mFgColor, mClearColor;
         };
+        
+    public:
+        static int ByteDepth(enum PixelFormat);
         
     public:
         /**
@@ -46,7 +49,7 @@ namespace sdl {
          * \arg \c width The width of the image to create.
          * \arg \c height The height of the image to create.
          */
-        Image(int width, int height);
+        Image(uint32_t width, uint32_t height);
         /**
          * \brief Create a new image of the given width, height and format.
          * 
@@ -56,7 +59,7 @@ namespace sdl {
          * \arg \c height The height of the image
          * \arg \c format The pixel format for the image.
          */
-        Image(int width, int height, Image::PixelFormat format);
+        Image(uint32_t width, uint32_t height, Image::PixelFormat format);
         /**
          * \brief Create a new RGBA image of the given width, height and pitch.
          * 
@@ -71,7 +74,7 @@ namespace sdl {
          * \arg \c height The height of the image
          * \arg \c pitch The pitch of the image
          */
-        Image(int width, int height, int pitch);
+        Image(uint32_t width, uint32_t height, uint32_t pitch);
         /**
          * \brief Create a new image with the given width, height, pitch and
          * format.
@@ -81,21 +84,29 @@ namespace sdl {
          * \arg \c pitch The pitch of the image
          * \arg \c format The pixel format of the image
          */
-        Image(int width, int height, int pitch, Image::PixelFormat format);
+        Image(uint32_t width, uint32_t height, uint32_t pitch,
+              Image::PixelFormat format);
         /**
          * \brief Create a new image with the given width, height, pitch and
          * format.
          */
-        Image(int width, int height, int pitch, Image::PixelFormat format,
-              uint8_t *data);
+        Image(uint32_t width, uint32_t height, uint32_t pitch,
+              Image::PixelFormat format, uint8_t *data);
         virtual ~Image();
         
         void setPixel(int x, int y, const Color<uint8_t> &color);
         Color<uint8_t> getPixel(int x, int y);
         
         virtual Graphics & getGraphics();
+        
+        uint32_t width() const;
+        uint32_t height() const;
+        uint32_t pitch() const;
+        Image::PixelFormat format() const;
     protected:
-        int mWidth, mHeight, mPitch;
+        uint32_t mWidth, mHeight, mPitch;
+        Image::PixelFormat mFormat;
+        uint8_t *mBuffer;
         ImageGraphics *mGraphics;
     };
 }

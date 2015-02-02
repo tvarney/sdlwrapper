@@ -18,6 +18,8 @@ namespace sdl {
         virtual void setClearColor(const Color<uint8_t> &color) = 0;
         
         virtual void makeCurrent() = 0;
+        
+        virtual bool supportsOpenGL() const = 0;
     };
 }
 
