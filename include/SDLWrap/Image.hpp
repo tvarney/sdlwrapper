@@ -22,23 +22,26 @@ namespace sdl {
             RGBA,
         };
         
-        class ImageGraphics : public Graphics {
+        class Graphics : public sdl::Graphics {
         public:
-            ImageGraphics(Image &image);
-            virtual ~ImageGraphics();
+            Graphics(Image &image);
+            virtual ~Graphics();
             
             void clear();
             void present();
             
             void setColor(const Color<uint8_t> &color);
             void setClearColor(const Color<uint8_t> &color);
+            
+            void makeCurrent();
+            bool supportsOpenGL() const;
         protected:
             Image & mParent;
             Color<uint8_t> mFgColor, mClearColor;
         };
         
     public:
-        static int ByteDepth(enum PixelFormat);
+        static uint32_t ByteDepth(enum PixelFormat fmt);
         
     public:
         /**
@@ -97,17 +100,18 @@ namespace sdl {
         void setPixel(int x, int y, const Color<uint8_t> &color);
         Color<uint8_t> getPixel(int x, int y);
         
-        virtual Graphics & getGraphics();
+        virtual sdl::Graphics & getGraphics();
         
         uint32_t width() const;
         uint32_t height() const;
         uint32_t pitch() const;
+        uint32_t bpp() const;
         Image::PixelFormat format() const;
     protected:
-        uint32_t mWidth, mHeight, mPitch;
+        uint32_t mWidth, mHeight, mPitch, mBpp;
         Image::PixelFormat mFormat;
         uint8_t *mBuffer;
-        ImageGraphics *mGraphics;
+        Image::Graphics *mGraphics;
     };
 }
 

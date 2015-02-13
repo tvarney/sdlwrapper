@@ -1,15 +1,17 @@
 
 #include "SDLWrap/Image.hpp"
 
+#include <cstring>
+
 using namespace sdl;
 
-Image::ImageGraphics::ImageGraphics(Image &image) :
+Image::Graphics::Graphics(Image &image) :
     mParent(image)
 { }
 
-Image::ImageGraphics::~ImageGraphics() { }
+Image::Graphics::~Graphics() { }
 
-void Image::ImageGraphics::clear() {
+void Image::Graphics::clear() {
     Color<uint8_t> &clearcolor = mClearColor;
     
     if(mParent.mFormat == Image::RGBA) {
@@ -32,13 +34,29 @@ void Image::ImageGraphics::clear() {
     }
 }
 
-void Image::ImageGraphics::present() { }
+void Image::Graphics::present() { }
 
-void Image::ImageGraphics::setColor(const Color<uint8_t> &color) {
+void Image::Graphics::setColor(const Color<uint8_t> &color) {
     mFgColor = color;
 }
-void Image::ImageGraphics::setClearColor(const Color<uint8_t> &color) {
+void Image::Graphics::setClearColor(const Color<uint8_t> &color) {
     mClearColor = color;
+}
+
+void Image::Graphics::makeCurrent() { }
+bool Image::Graphics::supportsOpenGL() const {
+    return false;
+}
+
+uint32_t Image::ByteDepth(enum Image::PixelFormat fmt) {
+    switch(fmt) {
+    case Image::RGB:
+        return 3;
+    case Image::RGBA:
+        return 4;
+    default:
+        return 0;
+    }
 }
 
 Image::Image(uint32_t width, uint32_t height) :
@@ -57,14 +75,58 @@ Image::Image(uint32_t width, uint32_t height, uint32_t pitch,
 Image::Image(uint32_t width, uint32_t height, uint32_t pitch,
              Image::PixelFormat format, uint8_t *data) :
     mWidth(width > 0 ? width : 1), mHeight(height > 0 ? height : 1),
-    mPitch(pitch > Image::ByteDepth(format) * mWidth ? pitch :
-           Image::ByteDepth(format) * mWidth),
-    mBuffer(nullptr), mGraphics(nullptr)
+    mPitch(pitch > mWidth ? pitch : width), mBpp(Image::ByteDepth(format)),
+    mFormat(format), mBuffer(nullptr), mGraphics(nullptr)
 {
-    if(std::numeric_limits<uint32_t>::max() / mPitch > mHeight) {
-        mHeight = std::numeric_limits<uint32_t>::max() / mPitch;
+    mBuffer = new uint8_t[mPitch * mHeight * mBpp];
+    if(data != nullptr) {
+        std::memcpy(mBuffer, data, mBpp * mPitch * mHeight);
     }
-    
-    mBuffer = new uint8_t[mPitch * mHeight];
 }
 
+Image::~Image() {
+    if(mBuffer != nullptr) {
+        delete[] mBuffer;
+    }
+}
+
+void Image::setPixel(int x, int y, const Color<uint8_t> &color) {
+    uint8_t *pbase = mBuffer + ((x + y * mPitch) * mBpp);
+    pbase[0] = color.r;
+    pbase[1] = color.g;
+    pbase[2] = color.b;
+    if(mFormat == Image::RGBA) {
+        pbase[3] = color.a;
+    }
+}
+
+Color<uint8_t> Image::getPixel(int x, int y) {
+    uint8_t *pbase = mBuffer + ((x + y * mPitch) * mBpp);
+    if(mFormat == Image::RGBA) {
+        return Color<uint8_t>(pbase[0], pbase[1], pbase[2], pbase[3]);
+    }
+    return Color<uint8_t>(pbase[0], pbase[1], pbase[2]);
+}
+
+sdl::Graphics & Image::getGraphics() {
+    if(mGraphics == nullptr) {
+        mGraphics = new Image::Graphics(*this);
+    }
+    return *mGraphics;
+}
+
+uint32_t Image::width() const {
+    return mWidth;
+}
+uint32_t Image::height() const {
+    return mHeight;
+}
+uint32_t Image::pitch() const {
+    return mPitch;
+}
+uint32_t Image::bpp() const {
+    return mBpp;
+}
+Image::PixelFormat Image::format() const {
+    return mFormat;
+}
