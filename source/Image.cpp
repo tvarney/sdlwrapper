@@ -41,6 +41,19 @@ void Image::ImageGraphics::setClearColor(const Color<uint8_t> &color) {
     mClearColor = color;
 }
 
+Image::Image(uint32_t width, uint32_t height) :
+    Image(width, height, width, Image::RGBA, nullptr)
+{ }
+Image::Image(uint32_t width, uint32_t height, Image::PixelFormat format) :
+    Image(width, height, width, format, nullptr)
+{ }
+Image::Image(uint32_t width, uint32_t height, uint32_t pitch) :
+    Image(width, height, pitch, Image::RGBA, nullptr)
+{ }
+Image::Image(uint32_t width, uint32_t height, uint32_t pitch,
+             Image::PixelFormat format) :
+    Image(width, height, pitch, format, nullptr)
+{ }
 Image::Image(uint32_t width, uint32_t height, uint32_t pitch,
              Image::PixelFormat format, uint8_t *data) :
     mWidth(width > 0 ? width : 1), mHeight(height > 0 ? height : 1),
