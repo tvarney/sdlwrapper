@@ -85,7 +85,7 @@ void Window::WindowGraphics::makeCurrent() {
 // Window API //
 //------------//
 Window::Window(const std::string &title, int width, int height, int x, int y) :
-    mWinHandle(nullptr)
+    mWinHandle(nullptr), mGraphics(nullptr)
 {
     mWinHandle = SDL_CreateWindow(title.data(), x, y, width, height,
                                   SDL_WINDOW_OPENGL);
@@ -125,7 +125,6 @@ uint32_t Window::getId() const {
 }
 
 Graphics & Window::getGraphics() {
-    
     if(mGraphics == nullptr) {
         mGraphics = new WindowGraphics(*this);
     }
