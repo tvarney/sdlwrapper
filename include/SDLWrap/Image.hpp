@@ -33,6 +33,14 @@ namespace sdl {
             void setColor(const Color<uint8_t> &color);
             void setClearColor(const Color<uint8_t> &color);
             
+            void draw(const geom::Point2d &point);
+            void draw(const geom::Line2d &line);
+            void draw(const geom::Rectangle2d &rect);
+            //void draw(const geom::Circle2d &circle);
+            
+            void fill(const geom::Rectangle2d &rect);
+            //void fill(const geom::Circle2d &circle);
+            
             void makeCurrent();
             bool supportsOpenGL() const;
         protected:

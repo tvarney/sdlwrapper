@@ -43,6 +43,136 @@ void Image::Graphics::setClearColor(const Color<uint8_t> &color) {
     mClearColor = color;
 }
 
+void Image::Graphics::draw(const geom::Point2d &point) {
+    mParent.setPixel(point.x, point.y, mFgColor);
+}
+void Image::Graphics::draw(const geom::Line2d &line) {
+    
+}
+void Image::Graphics::draw(const geom::Rectangle2d &rect) {
+    uint32_t width = rect.dim.width;
+    uint32_t x1 = rect.origin.x;
+    uint32_t x2 = x1 + width;
+    uint32_t y1 = rect.origin.y;
+    uint32_t y2 = y1 + rect.dim.height;
+    uint32_t a2 = 255 - mFgColor.a;
+    uint32_t pdiff = mParent.mBpp * (mParent.mPitch - mParent.mWidth + x1);
+    uint8_t *p = mParent.mBuffer + (x1 + y1 * mParent.mPitch) * mParent.mBpp;
+    
+    // Precompute alpha multiplied color values
+    uint32_t ra = mFgColor.r * ((uint32_t)mFgColor.a);
+    uint32_t ga = mFgColor.g * ((uint32_t)mFgColor.a);
+    uint32_t ba = mFgColor.b * ((uint32_t)mFgColor.a);
+    
+    switch(mParent.format()) {
+    case Image::RGB:
+        /* Draw top line */
+        for(uint32_t x = x1; x <= x2; ++x) {
+            p[0] = (p[0] * a2 + ra) >> 8;
+            p[1] = (p[1] * a2 + ga) >> 8;
+            p[2] = (p[2] * a2 + ba) >> 8;
+            p += 3;
+        }
+        /* Draw middle vertical lines */
+        p += pdiff;
+        for(uint32_t y = y1 + 1; y < y2; ++y) {
+            p[0] = (p[0] * a2 + ra) >> 8;
+            p[1] = (p[1] * a2 + ga) >> 8;
+            p[2] = (p[2] * a2 + ba) >> 8;
+            
+            p[0 + width] = (p[0 + width] * a2 + ra) >> 8;
+            p[1 + width] = (p[1 + width] * a2 + ra) >> 8;
+            p[2 + width] = (p[2 + width] * a2 + ra) >> 8;
+            
+            p += pdiff;
+        }
+        /* Draw bottom line */
+        for(uint32_t x = x1; x < x2; ++x) {
+            p[0] = (p[0] * a2 + ra) >> 8;
+            p[1] = (p[1] * a2 + ga) >> 8;
+            p[2] = (p[2] * a2 + ba) >> 8;
+            p += 3;
+        }
+        break;
+    case Image::RGBA:
+        /* Draw top line */
+        for(uint32_t x = x1; x <= x2; ++x) {
+            p[0] = (p[0] * a2 + ra) >> 8;
+            p[1] = (p[1] * a2 + ga) >> 8;
+            p[2] = (p[2] * a2 + ba) >> 8;
+            p[3] = p[3] + mFgColor.a;
+            p += 4;
+        }
+        /* Draw middle vertical lines */
+        p += pdiff;
+        for(uint32_t y = y1 + 1; y < y2; ++y) {
+            p[0] = (p[0] * a2 + ra) >> 8;
+            p[1] = (p[1] * a2 + ga) >> 8;
+            p[2] = (p[2] * a2 + ba) >> 8;
+            p[3] = p[3] + mFgColor.a;
+            
+            p[0 + width] = (p[0 + width] * a2 + ra) >> 8;
+            p[1 + width] = (p[1 + width] * a2 + ra) >> 8;
+            p[2 + width] = (p[2 + width] * a2 + ra) >> 8;
+            p[3 + width] = p[3 + width] + mFgColor.a;
+            
+            p += pdiff;
+        }
+        /* Draw bottom line */
+        for(uint32_t x = x1; x < x2; ++x) {
+            p[0] = (p[0] * a2 + ra) >> 8;
+            p[1] = (p[1] * a2 + ga) >> 8;
+            p[2] = (p[2] * a2 + ba) >> 8;
+            p[3] = p[3] + mFgColor.a;
+            
+            p += 4;
+        }
+        break;
+    }
+}
+
+void Image::Graphics::fill(const geom::Rectangle2d &rect) {
+    uint32_t x1 = rect.origin.x;
+    uint32_t x2 = x1 + rect.dim.width;
+    uint32_t y1 = rect.origin.y;
+    uint32_t y2 = y1 + rect.dim.height;
+    uint32_t a2 = 255 - mFgColor.a;
+    uint32_t pdiff = mParent.mBpp * (mParent.mPitch - mParent.mWidth + x1);
+    uint8_t *p = mParent.mBuffer + (x1 + y1 * mParent.mPitch) * mParent.mBpp;
+    
+    // Precompute the alpha*color
+    uint32_t ra = mFgColor.r * ((uint32_t)mFgColor.a);
+    uint32_t ga = mFgColor.g * ((uint32_t)mFgColor.a);
+    uint32_t ba = mFgColor.b * ((uint32_t)mFgColor.a);
+    
+    switch(mParent.format()) {
+    case Image::RGB:
+        for(uint32_t y = y1; y < y2; ++y) {
+            for(uint32_t x = x1; x <= x2; ++x) {
+                p[0] = (p[0] * a2 + ra) >> 8;
+                p[1] = (p[1] * a2 + ga) >> 8;
+                p[2] = (p[2] * a2 + ba) >> 8;
+                p += 3;;
+            }
+            p += pdiff;
+        }
+        break;
+    case Image::RGBA:
+        for(uint32_t y = y1; y < y2; ++y) {
+            for(uint32_t x = x1; x <= x2; ++x) {
+                p[0] = (p[0] * a2 + ra) >> 8;
+                p[1] = (p[1] * a2 + ga) >> 8;
+                p[2] = (p[2] * a2 + ba) >> 8;
+                p[3] = p[3] + mFgColor.a;
+                
+                p += 4;
+            }
+            p += pdiff;
+        }
+        break;
+    }
+}
+
 void Image::Graphics::makeCurrent() { }
 bool Image::Graphics::supportsOpenGL() const {
     return false;
