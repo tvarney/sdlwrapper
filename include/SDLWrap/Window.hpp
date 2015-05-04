@@ -8,8 +8,9 @@
 #include <map>
 #include <string>
 
+#include "Graphics.hpp"
 #include "Renderable.hpp"
-#include "GraphicsGL.hpp"
+#include "ViewManager.hpp"
 
 extern "C" struct SDL_Window;
 
@@ -23,7 +24,7 @@ namespace sdl {
         /**
          * \brief The OpenGL graphics context used with windows.
          */
-        class WindowGraphics : public GraphicsGL {
+        class WindowGraphics : public Graphics {
         public:
             WindowGraphics(Window &window);
             virtual ~WindowGraphics();
@@ -91,9 +92,11 @@ namespace sdl {
         virtual void update();
         
         virtual Graphics & getGraphics();
+        virtual ViewManager & getViewManager();
     protected:
         Window(const std::string &title, int width, int height, int x, int y);
         
+        ViewManager mManager;
         SDL_Window *mWinHandle;
         WindowGraphics *mGraphics;
         uint32_t mWinId; //< Cached window ID

@@ -132,8 +132,13 @@ Graphics & Window::getGraphics() {
     return *mGraphics;
 }
 
+ViewManager & Window::getViewManager() {
+    return mManager;
+}
+
 void Window::update() {
     Graphics &g = this->getGraphics();
+    g.makeCurrent();
     g.clear();
     // root->update(g);
     g.present();

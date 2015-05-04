@@ -10,42 +10,13 @@
 
 namespace sdl {
     /**
-     * \brief A renderable image class.
-     * 
-     * For ease of implementation, all image types except RGBA8888 and RGB888
-     * are ignored.
+     * \brief A class that represents an image.
      */
-    class Image : public Renderable {
+    class Image {
     public:
         enum PixelFormat {
             RGB,
             RGBA,
-        };
-        
-        class Graphics : public sdl::Graphics {
-        public:
-            Graphics(Image &image);
-            virtual ~Graphics();
-            
-            void clear();
-            void present();
-            
-            void setColor(const Color<uint8_t> &color);
-            void setClearColor(const Color<uint8_t> &color);
-            
-            void draw(const geom::Point2d &point);
-            void draw(const geom::Line2d &line);
-            void draw(const geom::Rectangle2d &rect);
-            //void draw(const geom::Circle2d &circle);
-            
-            void fill(const geom::Rectangle2d &rect);
-            //void fill(const geom::Circle2d &circle);
-            
-            void makeCurrent();
-            bool supportsOpenGL() const;
-        protected:
-            Image & mParent;
-            Color<uint8_t> mFgColor, mClearColor;
         };
         
     public:
@@ -108,8 +79,6 @@ namespace sdl {
         void setPixel(int x, int y, const Color<uint8_t> &color);
         Color<uint8_t> getPixel(int x, int y);
         
-        virtual sdl::Graphics & getGraphics();
-        
         uint32_t width() const;
         uint32_t height() const;
         uint32_t pitch() const;
@@ -119,7 +88,6 @@ namespace sdl {
         uint32_t mWidth, mHeight, mPitch, mBpp;
         Image::PixelFormat mFormat;
         uint8_t *mBuffer;
-        Image::Graphics *mGraphics;
     };
 }
 

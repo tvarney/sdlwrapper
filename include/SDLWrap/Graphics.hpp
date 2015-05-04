@@ -15,22 +15,26 @@ namespace sdl {
     public:
         virtual ~Graphics();
         
-        virtual void clear() = 0;
-        virtual void present() = 0;
+        virtual void clear();
+        virtual void present();
         
-        virtual void setColor(const Color<uint8_t> &color) = 0;
-        virtual void setClearColor(const Color<uint8_t> &color) = 0;
+        virtual void setColor(const Color<uint8_t> &color);
+        virtual void setClearColor(const Color<uint8_t> &color);
         
-        virtual void draw(const geom::Point2d &point) = 0;
-        virtual void draw(const geom::Line2d &line) = 0;
-        virtual void draw(const geom::Rectangle2d &rect) = 0;
+        virtual void draw(const geom::Point2d &point);
+        virtual void draw(const geom::Line2d &line);
+        virtual void draw(const geom::Rectangle2d &rect);
         //virtual void draw(const geom::Circle2d &circle) = 0;
         
-        virtual void fill(const geom::Rectangle2d &rect) = 0;
+        virtual void fill(const geom::Rectangle2d &rect);
         //virtual void fill(const geom::Circle2d &circle) = 0;
         
         virtual void makeCurrent() = 0;
-        virtual bool supportsOpenGL() const = 0;
+    protected:
+        Graphics();
+        
+        void ortho(double width, double height, double depth = 1.0);
+        Color<uint8_t> mFgColor, mClearColor;
     };
 }
 
