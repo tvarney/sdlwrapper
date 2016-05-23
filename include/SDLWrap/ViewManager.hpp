@@ -26,10 +26,16 @@ namespace sdl {
          * 
          * \param \c views The number of Views to remove.
          */
-        void pop(int views=1);
+        void pop(std::size_t views=1);
         
         /**
          * \brief Change the topmost element for the given view.
+         *
+         * This is faster than a pop and push combo, as it does not call the
+         * resume method of the view which would be revealed by the pop.
+         *
+         * For views which do significant work on being resumed or paused, this
+         * saves a call to both methods.
          * 
          * \param \c v The view to swap onto the stack
          */
@@ -43,8 +49,8 @@ namespace sdl {
          * \param \c depth The depth of the view to return
          * \return A reference to the view at the given depth
          */
-        View & peek(int depth=0);
-        const View & peek(int depth=0) const;
+        View & peek(std::size_t depth=0);
+        const View & peek(std::size_t depth=0) const;
         
         /**
          * \brief Remove all views from this stack.

@@ -16,7 +16,7 @@ namespace sdl {
         virtual ~Graphics();
         
         virtual void clear();
-        virtual void present();
+        virtual void present() = 0;
         
         virtual void setColor(const Color<uint8_t> &color);
         virtual void setClearColor(const Color<uint8_t> &color);
